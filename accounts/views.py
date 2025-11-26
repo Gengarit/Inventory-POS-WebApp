@@ -128,7 +128,11 @@ class RegisterView(View):
             user = form.save()
             # Generate a unique employee_id
             employee_id = f"EMP-{uuid.uuid4().hex[:8].upper()}"
-            UserProfile.objects.create(user=user, employee_id=employee_id)
+            # Update the existing profile created by the signal
+            profile = getattr(user, 'profile', None)
+            if profile:
+                profile.employee_id = employee_id
+                profile.save()
             login(request, user)
             messages.success(request, 'Account created successfully!')
             return redirect('inventory:dashboard')
