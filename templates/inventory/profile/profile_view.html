@@ -25,18 +25,25 @@
     }
     
     .stat-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.25);
+        color: #222;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         padding: 1.5rem;
         text-align: center;
         transition: transform 0.3s ease;
     }
     
     .dark .stat-card {
-        background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
-        color: white;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        background: rgba(30, 41, 59, 0.35);
+        color: #fff;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(51, 65, 85, 0.18);
     }
     
     .stat-card:hover {
@@ -46,15 +53,21 @@
     .activity-item {
         padding: 1rem;
         border-left: 4px solid #3b82f6;
-        background: #f8fafc;
+        background: rgba(255, 255, 255, 0.25);
         margin-bottom: 0.5rem;
-        border-radius: 0 8px 8px 0;
+        border-radius: 0 12px 12px 0;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         transition: all 0.3s ease;
     }
     
     .dark .activity-item {
-        background: #1e293b;
+        background: rgba(30, 41, 59, 0.35);
         border-left-color: #60a5fa;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
     
     .activity-item:hover {
@@ -68,18 +81,28 @@
     }
     
     .profile-section {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background: rgba(30, 41, 59, 0.35);
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(51, 65, 85, 0.18);
         padding: 2rem;
         margin-bottom: 2rem;
         transition: all 0.3s ease;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
     }
     
     .dark .profile-section {
-        background: #1e293b;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        border: 1px solid #334155;
+        background: rgba(30, 41, 59, 0.35);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(51, 65, 85, 0.18);
     }
     
     .badge-status {
@@ -195,35 +218,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+
+<div class="container-fluid py-4" style="background:rgba(255,255,255,0.01);min-height:100vh;">
     <!-- Profile Header -->
-    <div class="profile-section scale-in">
-        <div class="row align-items-center">
-            <div class="col-md-2 text-center mb-3 mb-md-0">
-                <img src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}{% static 'images/default-avatar.svg' %}{% endif %}" 
-                     alt="{{ user.get_full_name|default:user.username }}" 
-                     class="profile-avatar float">
+    <div class="profile-section scale-in" style="position:relative;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 2rem;">
+            <div class="d-flex flex-column align-items-center" style="flex:1; min-width:120px;">
+                <span class="text-muted mb-1">Cashier</span>
+                <span class="fw-bold" style="font-size:1.25rem;">{{ user.username }}</span>
+                <span class="text-muted" style="font-size:1rem; opacity:0.6;">&nbsp;</span>
             </div>
-            <div class="col-md-7">
-                <h2 class="mb-2 gradient-text">{{ profile.display_name }}</h2>
-                <p class="text-muted mb-2">
-                    <i class="fas fa-user me-2"></i>{{ user.username }}
-                </p>
-                {% if profile.job_title %}
-                <p class="text-muted mb-2">
-                    <i class="fas fa-briefcase me-2"></i>{{ profile.job_title }}
-                    {% if profile.department %} - {{ profile.department }}{% endif %}
-                </p>
-                {% endif %}
-                {% if profile.bio %}
-                <p class="mb-2">{{ profile.bio }}</p>
-                {% endif %}
-                <span class="badge-status badge-active">
-                    <i class="fas fa-circle me-1"></i>Active Employee
-                </span>
+            <div class="d-flex flex-column align-items-center" style="flex:1; min-width:180px;">
+                <span class="text-muted mb-1">Date &amp; Time</span>
+                <span class="fw-bold" style="font-size:1.25rem;">{{ now|date:'M d, Y' }}</span>
+                <span class="text-muted" style="font-size:1rem;">{{ now|date:'h:i:s A' }}</span>
             </div>
-            <div class="col-md-3 text-end">
-                <a href="{% url 'inventory:profile_edit' %}" class="btn btn-primary pulse">
+            <div class="text-end" style="flex:1; min-width:160px;">
+                <a href="{% url 'inventory:profile_edit' %}" class="btn btn-primary pulse" style="font-size:1rem; padding:0.5rem 1.25rem;">
                     <i class="fas fa-edit me-2"></i>Edit Profile
                 </a>
             </div>

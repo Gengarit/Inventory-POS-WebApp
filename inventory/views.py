@@ -158,6 +158,11 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return context
     
     def form_valid(self, form):
+        # Extra input validation
+        name = form.cleaned_data.get('name', '')
+        if '<script' in name.lower() or 'javascript:' in name.lower():
+            messages.error(self.request, 'Invalid product name.')
+            return self.form_invalid(form)
         # Set default values for hidden fields
         form.instance.cost_price = form.instance.selling_price
         form.instance.minimum_stock = 5
@@ -192,13 +197,16 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return context
     
     def form_valid(self, form):
+        # Extra input validation
+        name = form.cleaned_data.get('name', '')
+        if '<script' in name.lower() or 'javascript:' in name.lower():
+            messages.error(self.request, 'Invalid product name.')
+            return self.form_invalid(form)
         # Update cost_price to match selling_price if needed
         if not form.instance.cost_price:
             form.instance.cost_price = form.instance.selling_price
-            
         # Log the update
         logger.info(f"User {self.request.user.username} updated product {form.instance.id}")
-        
         messages.success(self.request, 'Product updated successfully!')
         return super().form_valid(form)
 
