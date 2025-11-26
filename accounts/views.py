@@ -7,6 +7,11 @@ from django.views.generic import (
 )
 from django.urls import reverse_lazy
 from .models import UserProfile, CompanySettings
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.views import View
+from django.contrib.auth.views import LogoutView
+import uuid
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -110,3 +115,28 @@ class CompanySettingsView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Company settings updated successfully!')
         return super().form_valid(form)
+
+
+class RegisterView(View):
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, 'accounts/register.html', {'form': form})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Generate a unique employee_id
+            employee_id = f"EMP-{uuid.uuid4().hex[:8].upper()}"
+            UserProfile.objects.create(user=user, employee_id=employee_id)
+            login(request, user)
+            messages.success(request, 'Account created successfully!')
+            return redirect('inventory:dashboard')
+        return render(request, 'accounts/register.html', {'form': form})
+
+
+class LogoutAllowGetView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in ['get', 'post']:
+            return super().dispatch(request, *args, **kwargs)
+        return self.http_method_not_allowed(request, *args, **kwargs)

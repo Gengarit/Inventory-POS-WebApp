@@ -23,4 +23,7 @@ urlpatterns = [
     
     # Company settings
     path('settings/', views.CompanySettingsView.as_view(), name='company_settings'),
+
+    # Registration URL
+    path('register/', views.RegisterView.as_view(), name='register'),
 ]
