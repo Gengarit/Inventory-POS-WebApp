@@ -70,15 +70,23 @@ else:
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Use WhiteNoise for static files
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
-# Static files compression
+# Use WhiteNoise for static and media files
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files - for production, you'd want to use cloud storage
+# Serve media files with Whitenoise (temporary workaround)
+WHITENOISE_ALLOW_ALL_MEDIA = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Add media files to Whitenoise
+WHITENOISE_ROOT = MEDIA_ROOT
+
+# Session settings for HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default=SECRET_KEY)
