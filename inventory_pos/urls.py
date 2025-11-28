@@ -28,8 +28,16 @@ urlpatterns = [
     path('pos/', include('pos.urls')),
 ]
 
+from django.core.exceptions import ImproperlyConfigured
+try:
+    # If using S3, MEDIA_URL will be an https URL
+    if settings.MEDIA_URL.startswith('http'):
+        pass  # Do not serve media locally
+    else:
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+except (AttributeError, ImproperlyConfigured):
+    pass
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
     
     # Add django-browser-reload for development
