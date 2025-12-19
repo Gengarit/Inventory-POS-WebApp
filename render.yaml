@@ -14,6 +14,14 @@ services:
           type: web
           name: inventory-pos-app
           property: host
+    disks:
+      - name: media
+        mountPath: /media
+    static:
+      - name: static
+        path: staticfiles
+      - name: media
+        path: media
 
 databases:
   - name: inventory-pos-db

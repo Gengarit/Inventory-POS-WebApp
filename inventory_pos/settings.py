@@ -103,6 +103,11 @@ except ImportError:
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Media and static files for local/dev (Render will override in production_settings.py)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -114,7 +119,6 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure--f6v439aj^(k9zxc5s!s*
 DEBUG = True  # Keep True for now to see detailed errors
 
 ALLOWED_HOSTS = ['*']  # Allow all hosts for Render deployment
-
 
 # Application definition
 
