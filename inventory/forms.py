@@ -1,79 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
-from accounts.models import UserProfile
+# from accounts.models import UserProfile  # Removed: accounts app deleted
 from .models import Product, Category, Supplier, StockMovement
 
-class UserProfileForm(forms.ModelForm):
-    """Form for editing user profile information"""
-    
-    class Meta:
-        model = UserProfile
-        fields = [
-            'profile_picture', 'bio', 'phone', 'date_of_birth', 
-            'address', 'job_title', 'department', 'hire_date',
-            'theme_preference'
-        ]
-        widgets = {
-            'bio': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Tell us about yourself...'
-            }),
-            'phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter your phone number'
-            }),
-            'date_of_birth': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'address': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Enter your address'
-            }),
-            'job_title': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g., Sales Associate, Manager'
-            }),
-            'department': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g., Sales, Inventory, Management'
-            }),
-            'hire_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'profile_picture': forms.FileInput(attrs={
-                'class': 'form-control',
-                'accept': 'image/*'
-            }),
-            'theme_preference': forms.Select(attrs={
-                'class': 'form-control'
-            })
-        }
 
-class UserAccountForm(forms.ModelForm):
-    """Form for editing basic user account information"""
-    
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email']
-        widgets = {
-            'first_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter your first name'
-            }),
-            'last_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter your last name'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter your email address'
-            }),
-        }
 
 class ProductForm(forms.ModelForm):
     """Enhanced product form with better styling"""

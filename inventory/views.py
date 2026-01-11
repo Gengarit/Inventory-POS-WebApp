@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
+ # Removed LoginRequiredMixin and login_required for POS-only mode
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic import (
@@ -10,14 +9,14 @@ from django.urls import reverse_lazy
 from django.db.models import Q, Sum, Count, F
 from django.http import JsonResponse, Http404
 from .models import Product, Category, Supplier, StockMovement
-from accounts.models import UserProfile
-from .forms import UserProfileForm, UserAccountForm
+# from accounts.models import UserProfile  # Removed: accounts app deleted
+# from .forms import UserProfileForm, UserAccountForm  # Removed: accounts app deleted
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(TemplateView):
     template_name = 'inventory/dashboard.html'
     
     def get_context_data(self, **kwargs):
@@ -37,7 +36,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         
         # Recent stock movements
         context['recent_movements'] = StockMovement.objects.select_related(
-            'product', 'user'
+            'product'
         ).order_by('-created_at')[:10]
         
         # Stock value - only active products
@@ -49,7 +48,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(ListView):
     model = Product
     template_name = 'inventory/product_list.html'
     context_object_name = 'products'
@@ -121,7 +120,7 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductDetailView(DetailView):
     model = Product
     template_name = 'inventory/product_detail.html'
     context_object_name = 'product'
@@ -142,11 +141,11 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['stock_movements'] = self.object.stock_movements.select_related('user').order_by('-created_at')[:20]
+        context['stock_movements'] = self.object.stock_movements.order_by('-created_at')[:20]
         return context
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(CreateView):
     model = Product
     fields = ['name', 'image', 'selling_price', 'stock_quantity', 'category']
     template_name = 'inventory/product_form.html'
@@ -171,7 +170,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(UpdateView):
     model = Product
     fields = ['name', 'image', 'selling_price', 'stock_quantity', 'category']
     template_name = 'inventory/product_form.html'
@@ -211,7 +210,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'inventory/product_confirm_delete.html'
     success_url = reverse_lazy('inventory:product_list')
@@ -256,8 +255,12 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
                 messages.success(request, f'Product "{self.object.name}" restored successfully!')
             else:
                 # Soft delete
-                self.object.soft_delete(user=request.user)
-                logger.info(f"User {request.user.username} archived product {self.object.id}")
+                if request.user.is_authenticated:
+                    self.object.soft_delete(user=request.user)
+                    logger.info(f"User {request.user.username} archived product {self.object.id}")
+                else:
+                    self.object.soft_delete(user=None)
+                    logger.info(f"Anonymous user archived product {self.object.id}")
                 messages.success(request, f'Product "{self.object.name}" archived successfully!')
         
         return redirect(self.success_url)
@@ -268,13 +271,13 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
 
 # Category Views
-class CategoryListView(LoginRequiredMixin, ListView):
+class CategoryListView(ListView):
     model = Category
     template_name = 'inventory/category_list.html'
     context_object_name = 'categories'
 
 
-class CategoryCreateView(LoginRequiredMixin, CreateView):
+class CategoryCreateView(CreateView):
     model = Category
     fields = ['name', 'description']
     template_name = 'inventory/category_form.html'
@@ -285,7 +288,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+class CategoryUpdateView(UpdateView):
     model = Category
     fields = ['name', 'description']
     template_name = 'inventory/category_form.html'
@@ -311,7 +314,7 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+class CategoryDeleteView(DeleteView):
     model = Category
     template_name = 'inventory/category_confirm_delete.html'
     success_url = reverse_lazy('inventory:category_list')
@@ -337,7 +340,7 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class ArchivedProductsView(LoginRequiredMixin, ListView):
+class ArchivedProductsView(ListView):
     model = Product
     template_name = 'inventory/archived_products.html'
     context_object_name = 'products'
@@ -382,7 +385,7 @@ from reportlab.lib.units import inch
 from datetime import datetime
 
 
-@login_required
+
 @require_POST
 @csrf_protect
 def bulk_archive_products(request):
@@ -642,7 +645,7 @@ def product_quick_edit(request, pk):
 
 
 # Profile Views
-class ProfileView(LoginRequiredMixin, TemplateView):
+class ProfileView(TemplateView):
     """View for displaying user profile"""
     template_name = 'inventory/profile/profile_view.html'
     
@@ -667,34 +670,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@login_required
-def profile_edit(request):
-    """View for editing user profile"""
-    # Get or create user profile
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
-    if request.method == 'POST':
-        user_form = UserAccountForm(request.POST, instance=request.user)
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
-        
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Your profile has been updated successfully!')
-            return redirect('inventory:profile_view')
-        else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        user_form = UserAccountForm(instance=request.user)
-        profile_form = UserProfileForm(instance=profile)
-    
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'profile': profile
-    }
-    
-    return render(request, 'inventory/profile/profile_edit.html', context)
+
 
 
 @login_required

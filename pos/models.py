@@ -21,7 +21,7 @@ class Sale(models.Model):
     ]
 
     sale_number = models.CharField(max_length=20, unique=True)
-    cashier = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales')
+    # cashier field removed for POS-only mode (no user)
     
     # Amounts
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -91,17 +91,16 @@ class SaleItem(models.Model):
 
 
 class Cart(models.Model):
-    """Temporary cart for POS system"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    """Temporary cart for POS system (no user)"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ['user', 'product']
+        unique_together = ['product']
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name} x {self.quantity}"
+        return f"{self.product.name} x {self.quantity}"
 
     @property
     def line_total(self):

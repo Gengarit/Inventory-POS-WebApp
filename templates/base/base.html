@@ -7,8 +7,8 @@
     
     <!-- Favicon -->
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'images/supermarket.png' %}">
-    <link rel="shortcut icon" type="image/png" href="{% static 'images/supermarket.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/Gemini_Generated_Image_ti604tti604tti60.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/Gemini_Generated_Image_ti604tti604tti60.png' %}">
     
     <!-- Tailwind CSS via CDN (for development) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -786,7 +786,7 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    {% if user.is_authenticated %}
+    <!-- Navigation always visible in POS-only mode -->
     <nav class="bg-white shadow-lg border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -794,7 +794,7 @@
                     <!-- Logo -->
                     <div class="flex-shrink-0">
                         <a href="{% url 'inventory:dashboard' %}" class="flex items-center">
-                            <img src="{% static 'images/supermarket.png' %}" alt="Supermarket Logo" class="h-8 w-8 mr-2">
+                            <img src="{% static 'images/Gemini_Generated_Image_ti604tti604tti60.png' %}" alt="Gemini Logo" class="h-8 w-8 mr-2">
                             <span class="text-lg sm:text-xl font-bold text-gray-900">{{ company_name|default:"Inventory POS" }}</span>
                         </a>
                     </div>
@@ -848,38 +848,6 @@
                             </svg>
                         </button>
                     </div>
-
-                    <!-- Desktop User Menu -->
-                    <div class="hidden lg:flex lg:items-center lg:ml-6 lg:space-x-4">
-                        <!-- Dark Mode Toggle -->
-                        <button id="dark-mode-toggle" 
-                                class="p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" 
-                                title="Toggle Dark Mode"
-                                aria-label="Toggle dark mode">
-                            <i id="dark-mode-icon" class="fas fa-moon"></i>
-                        </button>
-                        
-                        <!-- User Dropdown -->
-                        <div class="relative group">
-                            <button class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <img class="h-8 w-8 rounded-full bg-gray-300" src="https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=3B82F6&color=fff" alt="{{ user.get_full_name }}">
-                                <span class="ml-2 text-gray-700 hidden xl:block">{{ user.get_full_name|default:user.username }}</span>
-                                <i class="fas fa-chevron-down ml-1 text-xs text-gray-500"></i>
-                            </button>
-                            <div class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <a href="{% url 'inventory:profile_view' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-user mr-2"></i>My Profile
-                                </a>
-                                <hr class="my-1">
-                                <form action="{% url 'accounts:logout' %}" method="post" style="margin:0;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" style="background:none;border:none;">
-                                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -931,26 +899,13 @@
                     </div>
                 </div>
                 <div class="mt-3 space-y-1">
-                    <a href="{% url 'inventory:profile_view' %}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
-                        <i class="fas fa-user mr-2"></i>My Profile
-                    </a>
-                    <button id="mobile-dark-mode-toggle" 
-                            class="w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-                            aria-label="Toggle dark mode">
-                        <i id="mobile-dark-mode-icon" class="fas fa-moon mr-3"></i>
-                        <span id="mobile-dark-mode-text">Dark Mode</span>
-                    </button>
-                    <form action="{% url 'accounts:logout' %}" method="post" style="margin:0;">
-                        {% csrf_token %}
-                        <button type="submit" class="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100" style="background:none;border:none;">
-                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                        </button>
-                    </form>
+                    <!-- Profile link removed: accounts app deleted -->
+                    <!-- Logout form removed: accounts app deleted -->
                 </div>
             </div>
         </div>
     </nav>
-    {% endif %}
+
 
     <!-- Main Content -->
     <main class="{% if user.is_authenticated %}py-6{% else %}py-12{% endif %}">

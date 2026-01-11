@@ -46,8 +46,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(StockMovement)
 class StockMovementAdmin(admin.ModelAdmin):
-    list_display = ['product', 'movement_type', 'quantity', 'reason', 'user', 'created_at']
-    list_filter = ['movement_type', 'created_at', 'user']
+    list_display = ['product', 'movement_type', 'quantity', 'reason', 'created_at']
+    list_filter = ['movement_type', 'created_at']
     search_fields = ['product__name', 'reason', 'reference']
     readonly_fields = ['created_at']
     date_hierarchy = 'created_at'

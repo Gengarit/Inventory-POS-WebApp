@@ -138,7 +138,7 @@ INSTALLED_APPS = [
     # Local apps
     'inventory',
     'pos',
-    'accounts',
+    # 'accounts',  # Removed: accounts app deleted
 ]
 
 MIDDLEWARE = [
@@ -295,9 +295,9 @@ TAILWIND_APP_NAME = 'theme'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login URLs
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Custom settings for client customization
 COMPANY_NAME = config('COMPANY_NAME', default='Inventory POS')

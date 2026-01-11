@@ -298,7 +298,7 @@ class StockMovement(models.Model):
     quantity = models.IntegerField()
     reason = models.CharField(max_length=200, blank=True)
     reference = models.CharField(max_length=100, blank=True, help_text="Reference number (invoice, PO, etc.)")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user field removed for POS-only mode (no user)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

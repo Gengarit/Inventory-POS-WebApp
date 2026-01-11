@@ -23,7 +23,7 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('inventory:dashboard'), name='home'),
-    path('accounts/', include('accounts.urls')),
+    # path('accounts/', include('accounts.urls')),  # Removed: accounts app deleted
     path('inventory/', include('inventory.urls')),
     path('pos/', include('pos.urls')),
 ]

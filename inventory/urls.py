@@ -9,7 +9,7 @@ urlpatterns = [
     
     # Profile
     path('profile/', views.ProfileView.as_view(), name='profile_view'),
-    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    # path('profile/edit/', views.profile_edit, name='profile_edit'),  # Removed: accounts/profile editing disabled
     path('profile/update-theme/', views.update_theme_preference, name='update_theme_preference'),
     
     # Products

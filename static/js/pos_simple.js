@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove from cart
         if (e.target.classList.contains('remove-item')) {
             const cartId = e.target.dataset.cartId;
-            if (cartId && confirm('Remove item?')) {
+            if (cartId) {
                 await removeFromCart(cartId);
             }
             return;

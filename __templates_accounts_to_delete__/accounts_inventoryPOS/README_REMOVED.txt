@@ -1,0 +1,1 @@
+This folder previously contained account-related templates. All files have been removed as part of the POS-only refactor.

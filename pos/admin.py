@@ -15,16 +15,15 @@ class PaymentRecordInline(admin.TabularInline):
 
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ['sale_number', 'cashier', 'total_amount', 'payment_method', 'status', 'created_at']
-    list_filter = ['status', 'payment_method', 'created_at', 'cashier']
-    search_fields = ['sale_number', 'cashier__username']
+    list_display = ['sale_number', 'total_amount', 'payment_method', 'status', 'created_at']
+    list_filter = ['status', 'payment_method', 'created_at']
+    search_fields = ['sale_number']
     readonly_fields = ['sale_number', 'change_amount', 'created_at', 'updated_at']
     inlines = [SaleItemInline, PaymentRecordInline]
     date_hierarchy = 'created_at'
-    
     fieldsets = (
         ('Sale Information', {
-            'fields': ('sale_number', 'cashier', 'status', 'notes')
+            'fields': ('sale_number', 'status', 'notes')
         }),
         ('Amounts', {
             'fields': ('subtotal', 'tax_amount', 'discount_amount', 'total_amount')
@@ -49,9 +48,9 @@ class SaleItemAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ['user', 'product', 'quantity', 'line_total', 'created_at']
-    list_filter = ['created_at', 'user']
-    search_fields = ['user__username', 'product__name']
+    list_display = ['product', 'quantity', 'line_total', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['product__name']
 
 
 @admin.register(PaymentRecord)
